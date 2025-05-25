@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Stock In') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">{{ _('Stock In') }}</h1>
+    
+    <div class="card">
+        <div class="card-header">{{ _('Stock In Information') }}</div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label for="product_id" class="form-label">{{ _('Product Selection') }} <span class="text-danger">*</span></label>
+                    <select class="form-select" id="product_id" name="product_id" required>
+                        <option value="">-- {{ _('Select Product') }} --</option>
+                        {% for product in products %}
+                        <option value="{{ product.id }}">{{ product.code }} - {{ product.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">{{ _('Quantity') }} <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" required min="1">
+                </div>
+                <div class="mb-3">
+                    <label for="remarks" class="form-label">{{ _('Remarks') }}</label>
+                    <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">{{ _('Submit') }}</button>
+                    <a href="{{ url_for('inventory') }}" class="btn btn-secondary">{{ _('Cancel') }}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

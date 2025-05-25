@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('View Sale') }} - {{ order.order_no }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ _('View Sale') }} - {{ order.order_no }}</h1>
+        <div>
+            <button class="btn btn-secondary print-button no-print">
+                <i class="fas fa-print me-1"></i> {{ _('Print') }}
+            </button>
+            <a href="{{ url_for('edit_sale', id=order.id) }}" class="btn btn-primary no-print">
+                <i class="fas fa-edit me-1"></i> {{ _('Edit') }}
+            </a>
+            <a href="{{ url_for('sales') }}" class="btn btn-secondary no-print">
+                <i class="fas fa-arrow-left me-1"></i> {{ _('Back') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>{{ _('Customer Information') }}</h5>
+                    <p><strong>{{ _('Customer Name') }}:</strong> {{ customer.name }}</p>
+                    <p><strong>{{ _('Contact Person') }}:</strong> {{ customer.contact_person }}</p>
+                    <p><strong>{{ _('Phone') }}:</strong> {{ customer.phone }}</p>
+                    <p><strong>{{ _('Address') }}:</strong> {{ customer.address }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>{{ _('Order Information') }}</h5>
+                    <p><strong>{{ _('Order No') }}:</strong> {{ order.order_no }}</p>
+                    <p><strong>{{ _('Order Date') }}:</strong> {{ order.order_date }}</p>
+                    <p><strong>{{ _('Salesperson') }}:</strong> {{ order.user.name }}</p>
+                    <p><strong>{{ _('Payment Method') }}:</strong> {{ _(order.payment_method) }}</p>
+                    <p><strong>{{ _('Payment Status') }}:</strong> 
+                        {% if order.payment_status == '已支付' %}
+                        <span class="badge bg-success">{{ _('Paid') }}</span>
+                        {% elif order.payment_status == '部分支付' %}
+                        <span class="badge bg-warning">{{ _('Partially Paid') }}</span>
+                        {% else %}
+                        <span class="badge bg-danger">{{ _('Unpaid') }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <h5>{{ _('Order Items') }}</h5>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{{ _('Product Code') }}</th>
+                            <th>{{ _('Product Name') }}</th>
+                            <th>{{ _('Specification') }}</th>
+                            <th>{{ _('Quantity') }}</th>
+                            <th>{{ _('Unit Price') }}</th>
+                            <th>{{ _('Amount') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item, product in items %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ product.code }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.specification }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.unit_price }}</td>
+                            <td>${{ item.amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-end"><strong>{{ _('Total Amount') }}:</strong></td>
+                            <td><strong>${{ order.total_amount }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="text-end"><strong>{{ _('Discount') }}:</strong></td>
+                            <td><strong>${{ order.discount }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="text-end"><strong>{{ _('Actual Amount') }}:</strong></td>
+                            <td><strong>${{ order.actual_amount }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            {% if order.remarks %}
+            <div class="mt-4">
+                <h5>{{ _('Remarks') }}</h5>
+                <p>{{ order.remarks }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

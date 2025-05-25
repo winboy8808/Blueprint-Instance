@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Add Sale') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">{{ _('Add Sale') }}</h1>
+    
+    <div class="card">
+        <div class="card-header">{{ _('Sale Information') }}</div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="customer_id" class="form-label">{{ _('Customer') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="customer_id" name="customer_id" required>
+                            <option value="">-- {{ _('Select Customer') }} --</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="payment_method" class="form-label">{{ _('Payment Method') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="payment_method" name="payment_method" required>
+                            <option value="Cash">{{ _('Cash') }}</option>
+                            <option value="Mobile Payment (USD)">{{ _('Mobile Payment (USD)') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="remarks" class="form-label">{{ _('Remarks') }}</label>
+                    <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">{{ _('Create Order and Add Items') }}</button>
+                    <a href="{{ url_for('sales') }}" class="btn btn-secondary">{{ _('Cancel') }}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Reports') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">{{ _('Report Center') }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">{{ _('Sales Report') }}</h5>
+                    <p class="card-text">{{ _('Analyze sales performance, revenue, and customer trends.') }}</p>
+                    <a href="{{ url_for('sales_report') }}" class="btn btn-primary">{{ _('View Report') }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-boxes fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">{{ _('Inventory Report') }}</h5>
+                    <p class="card-text">{{ _('Track stock levels, values, and identify low stock items.') }}</p>
+                    <a href="{{ url_for('inventory_report') }}" class="btn btn-success">{{ _('View Report') }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">{{ _('Customer Report') }}</h5>
+                    <p class="card-text">{{ _('Understand customer demographics and purchase behavior.') }}</p>
+                    <a href="{{ url_for('customers_report') }}" class="btn btn-warning">{{ _('View Report') }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-project-diagram fa-3x text-danger mb-3"></i>
+                    <h5 class="card-title">{{ _('Project Report') }}</h5>
+                    <p class="card-text">{{ _('Monitor project progress, budgets, and costs.') }}</p>
+                    <a href="{{ url_for('projects_report') }}" class="btn btn-danger">{{ _('View Report') }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Dashboard') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">{{ _('Dashboard') }}</h1>
+    
+    <!-- 统计卡片 -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="dashboard-card bg-gradient-primary">
+                <div class="card-title">{{ _('Products') }}</div>
+                <div class="card-value">{{ product_count }}</div>
+                <div class="card-icon"><i class="fas fa-boxes"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card bg-gradient-success">
+                <div class="card-title">{{ _('Customers') }}</div>
+                <div class="card-value">{{ customer_count }}</div>
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card bg-gradient-warning">
+                <div class="card-title">{{ _('Sales Orders') }}</div>
+                <div class="card-value">{{ sales_count }}</div>
+                <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dashboard-card bg-gradient-danger">
+                <div class="card-title">{{ _('Projects') }}</div>
+                <div class="card-value">{{ project_count }}</div>
+                <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <!-- 库存预警 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ _('Inventory Warnings') }}
+                </div>
+                <div class="card-body">
+                    {% if inventory_warning %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('Code') }}</th>
+                                    <th>{{ _('Product') }}</th>
+                                    <th>{{ _('Current Stock') }}</th>
+                                    <th>{{ _('Min Stock') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product, inventory in inventory_warning %}
+                                <tr>
+                                    <td>{{ product.code }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>
+                                        <span class="badge bg-danger">{{ inventory.quantity }}</span>
+                                    </td>
+                                    <td>{{ product.min_stock }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center">{{ _('No inventory warnings') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最近销售 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-shopping-cart me-2"></i>{{ _('Recent Sales') }}
+                </div>
+                <div class="card-body">
+                    {% if recent_sales %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('Order No') }}</th>
+                                    <th>{{ _('Date') }}</th>
+                                    <th>{{ _('Amount') }}</th>
+                                    <th>{{ _('Status') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_sales %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('view_sale', id=order.id) }}">{{ order.order_no }}</a>
+                                    </td>
+                                    <td>{{ order.order_date }}</td>
+                                    <td>${{ order.actual_amount }}</td>
+                                    <td>
+                                        {% if order.payment_status == '已支付' %}
+                                        <span class="badge bg-success">{{ order.payment_status }}</span>
+                                        {% elif order.payment_status == '部分支付' %}
+                                        <span class="badge bg-warning">{{ order.payment_status }}</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{{ order.payment_status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center">{{ _('No recent sales') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 进行中的项目 -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-project-diagram me-2"></i>{{ _('Ongoing Projects') }}
+                </div>
+                <div class="card-body">
+                    {% if ongoing_projects %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('Project Name') }}</th>
+                                    <th>{{ _('Start Date') }}</th>
+                                    <th>{{ _('End Date') }}</th>
+                                    <th>{{ _('Budget') }}</th>
+                                    <th>{{ _('Current Cost') }}</th>
+                                    <th>{{ _('Progress') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in ongoing_projects %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('view_project', id=project.id) }}">{{ project.name }}</a>
+                                    </td>
+                                    <td>{{ project.start_date }}</td>
+                                    <td>{{ project.end_date }}</td>
+                                    <td>${{ project.budget }}</td>
+                                    <td>${{ project.actual_cost }}</td>
+                                    <td>
+                                        {% set progress = (project.actual_cost / project.budget * 100) if project.budget > 0 else 0 %}
+                                        <div class="progress">
+                                            <div class="progress-bar {% if progress > 90 %}bg-danger{% elif progress > 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ progress }}%" 
+                                                 aria-valuenow="{{ progress }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                                {{ progress|round }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center">{{ _('No ongoing projects') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

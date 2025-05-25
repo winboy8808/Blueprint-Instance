@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Edit Sale') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">{{ _('Edit Sale') }} - {{ order.order_no }}</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">{{ _('Order Information') }}</div>
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" name="update_order" value="1">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ _('Customer') }}</label>
+                        <p><strong>{{ order.customer.name }}</strong></p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ _('Order Date') }}</label>
+                        <p><strong>{{ order.order_date }}</strong></p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ _('Salesperson') }}</label>
+                        <p><strong>{{ order.user.name }}</strong></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="discount" class="form-label">{{ _('Discount') }}</label>
+                        <input type="number" step="0.01" class="form-control" id="discount" name="discount" value="{{ order.discount }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="payment_status" class="form-label">{{ _('Payment Status') }}</label>
+                        <select class="form-select" id="payment_status" name="payment_status">
+                            <option value="Unpaid" {% if order.payment_status == 'Unpaid' %}selected{% endif %}>{{ _('Unpaid') }}</option>
+                            <option value="Partially Paid" {% if order.payment_status == 'Partially Paid' %}selected{% endif %}>{{ _('Partially Paid') }}</option>
+                            <option value="Paid" {% if order.payment_status == 'Paid' %}selected{% endif %}>{{ _('Paid') }}</option>
+                        </select>
+                    </div>
+                     <div class="col-md-4 mb-3">
+                        <label for="payment_method" class="form-label">{{ _('Payment Method') }}</label>
+                        <input type="text" class="form-control" id="payment_method" name="payment_method" value="{{ _(order.payment_method) }}" readonly>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="remarks" class="form-label">{{ _('Remarks') }}</label>
+                    <textarea class="form-control" id="remarks" name="remarks" rows="2">{{ order.remarks }}</textarea>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-success">{{ _('Update Order Info') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">{{ _('Order Items') }}</div>
+        <div class="card-body">
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Product') }}</th>
+                            <th>{{ _('Quantity') }}</th>
+                            <th>{{ _('Unit Price') }}</th>
+                            <th>{{ _('Amount') }}</th>
+                            <th>{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item, product in items %}
+                        <tr>
+                            <td>{{ product.name }} ({{ product.code }})</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.unit_price }}</td>
+                            <td>${{ item.amount }}</td>
+                            <td>
+                                <a href="{{ url_for('delete_sale_item', id=item.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('{{ _('Are you sure you want to remove this item?') }}')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">{{ _('No items added yet') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>{{ _('Total Amount') }}:</strong></td>
+                            <td colspan="2"><strong id="total_amount">{{ order.total_amount }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>{{ _('Discount') }}:</strong></td>
+                            <td colspan="2"><strong>{{ order.discount }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>{{ _('Actual Amount') }}:</strong></td>
+                            <td colspan="2"><strong id="actual_amount">{{ order.actual_amount }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <hr>
+
+            <h5>{{ _('Add Item') }}</h5>
+            <form method="post">
+                <input type="hidden" name="add_item" value="1">
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="product_id" class="form-label">{{ _('Product') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="product_id" name="product_id" required>
+                            <option value="">-- {{ _('Select Product') }} --</option>
+                            {% for product in products %}
+                            <option value="{{ product.id }}" data-price="{{ product.selling_price }}">{{ product.code }} - {{ product.name }} ({{ _('Stock') }}: {{ product.inventory.quantity }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="quantity" class="form-label">{{ _('Quantity') }} <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" required min="1">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">{{ _('Unit Price') }}</label>
+                        <p class="form-control-plaintext">$<span id="unit_price">0.00</span></p>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">{{ _('Amount') }}</label>
+                        <p class="form-control-plaintext">$<span id="amount">0.00</span></p>
+                    </div>
+                    <div class="col-md-1 mb-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">{{ _('Add') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('sales') }}" class="btn btn-secondary">{{ _('Back to Sales List') }}</a>
+        <a href="{{ url_for('view_sale', id=order.id) }}" class="btn btn-info">{{ _('View Order') }}</a>
+    </div>
+</div>
+{% endblock %}

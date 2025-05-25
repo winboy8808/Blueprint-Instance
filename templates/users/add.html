@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Add User') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">{{ _('Add User') }}</h1>
+    
+    <div class="card">
+        <div class="card-header">{{ _('User Information') }}</div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="username" class="form-label">{{ _('Username') }} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">{{ _('Name') }} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="role_id" class="form-label">{{ _('Role') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="role_id" name="role_id" required>
+                            <option value="">-- {{ _('Select Role') }} --</option>
+                            {% for role in roles %}
+                            <option value="{{ role.id }}">{{ _(role.name) }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="1" checked>
+                    <label class="form-check-label" for="is_active">{{ _('Active') }}</label>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">{{ _('Save') }}</button>
+                    <a href="{{ url_for('users') }}" class="btn btn-secondary">{{ _('Cancel') }}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

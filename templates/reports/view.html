@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _(report_title) }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ _(report_title) }}</h1>
+        <div>
+            <a href="{{ url_for('export_report', report_type=report_type, start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', '')) }}" class="btn btn-success no-print">
+                <i class="fas fa-file-excel me-1"></i> {{ _('Export to Excel') }}
+            </a>
+            <button class="btn btn-secondary print-button no-print">
+                <i class="fas fa-print me-1"></i> {{ _('Print') }}
+            </button>
+            <a href="{{ url_for('reports') }}" class="btn btn-secondary no-print">
+                <i class="fas fa-arrow-left me-1"></i> {{ _('Back') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4 no-print">
+        <div class="card-body">
+            <form method="get">
+                <div class="row align-items-end">
+                    <div class="col-md-4 mb-3">
+                        <label for="start_date" class="form-label">{{ _('Start Date') }}</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="end_date" class="form-label">{{ _('End Date') }}</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button type="submit" class="btn btn-primary">{{ _('Generate Report') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if report_data %}
+                <h5 class="mb-3">{{ _('Report Period') }}: {{ start_date }} {{ _('to') }} {{ end_date }}</h5>
+                
+                <!-- Summary Section (Example for Sales) -->
+                {% if report_type == 'sales' %}
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ _('Total Sales Amount') }}</h6>
+                                <p class="card-text fs-4">${{ report_data.summary.total_sales | round(2) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ _('Total Orders') }}</h6>
+                                <p class="card-text fs-4">{{ report_data.summary.total_orders }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ _('Average Order Value') }}</h6>
+                                <p class="card-text fs-4">${{ report_data.summary.average_order_value | round(2) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ _('Total Discount') }}</h6>
+                                <p class="card-text fs-4">${{ report_data.summary.total_discount | round(2) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Detail Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                {% for header in report_data.headers %}
+                                <th>{{ _(header) }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in report_data.rows %}
+                            <tr>
+                                {% for cell in row %}
+                                <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="{{ report_data.headers|length }}" class="text-center">{{ _('No data available for the selected period.') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center">{{ _('Please select a date range to generate the report.') }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

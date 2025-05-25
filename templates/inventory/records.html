@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Inventory Records') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ _('Inventory Records') }}</h1>
+        <a href="{{ url_for('inventory') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i> {{ _('Back') }}
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="tableSearch" placeholder="{{ _('Search') }}...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Time') }}</th>
+                            <th>{{ _('Product') }}</th>
+                            <th>{{ _('Type') }}</th>
+                            <th>{{ _('Quantity') }}</th>
+                            <th>{{ _('Source Type') }}</th>
+                            <th>{{ _('Operator') }}</th>
+                            <th>{{ _('Remarks') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record, product, user in records %}
+                        <tr>
+                            <td>{{ record.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ product.code }} - {{ product.name }}</td>
+                            <td>
+                                {% if record.type == '入库' %}
+                                <span class="badge bg-success">{{ _('Stock In') }}</span>
+                                {% else %}
+                                <span class="badge bg-warning">{{ _('Stock Out') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ record.quantity }}</td>
+                            <td>{{ _(record.source_type) }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ record.remarks }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

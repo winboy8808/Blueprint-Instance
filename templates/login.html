@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Login') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="login-form">
+        <h1>{{ _('Hardware CRM System') }}</h1>
+        <form method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">{{ _('Username') }}</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">{{ _('Password') }}</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ _('Login') }}</button>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <div class="language-switcher d-inline-block">
+                <a href="{{ url_for('change_language', language='zh') }}" class="me-2">
+                    <span class="flag-icon flag-icon-cn"></span> 中文
+                </a>
+                <a href="{{ url_for('change_language', language='en') }}">
+                    <span class="flag-icon flag-icon-us"></span> English
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    body {
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+    }
+</style>
+{% endblock %}

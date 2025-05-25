@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Inventory') }} - {{ _('Hardware CRM System') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ _('Inventory List') }}</h1>
+        <div>
+            <a href="{{ url_for('inventory_in') }}" class="btn btn-success me-2">
+                <i class="fas fa-plus me-1"></i> {{ _('Stock In') }}
+            </a>
+            <a href="{{ url_for('inventory_out') }}" class="btn btn-warning me-2">
+                <i class="fas fa-minus me-1"></i> {{ _('Stock Out') }}
+            </a>
+            <a href="{{ url_for('inventory_records') }}" class="btn btn-info">
+                <i class="fas fa-history me-1"></i> {{ _('Inventory Records') }}
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="tableSearch" placeholder="{{ _('Search') }}...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Code') }}</th>
+                            <th>{{ _('Product Name') }}</th>
+                            <th>{{ _('Specification') }}</th>
+                            <th>{{ _('Current Stock') }}</th>
+                            <th>{{ _('Min Stock') }}</th>
+                            <th>{{ _('Status') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product, inv in inventory %}
+                        <tr>
+                            <td>{{ product.code }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.specification }}</td>
+                            <td>
+                                {% if inv.quantity <= product.min_stock %}
+                                <span class="badge bg-danger">{{ inv.quantity }}</span>
+                                {% else %}
+                                <span class="badge bg-success">{{ inv.quantity }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ product.min_stock }}</td>
+                            <td>
+                                {% if inv.quantity <= product.min_stock %}
+                                <span class="badge bg-danger">{{ _('Low Stock') }}</span>
+                                {% else %}
+                                <span class="badge bg-success">{{ _('Normal') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
