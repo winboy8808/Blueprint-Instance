@@ -1,0 +1,26 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Babel==4.0.0
+pandas==2.2.2
+openpyxl==3.1.5
+SQLAlchemy==2.0.31
+Werkzeug==3.0.3
+Babel==2.15.0
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+itsdangerous==2.2.0
+click==8.1.7
+blinker==1.8.2
+python-dateutil==2.9.0.post0
+pytz==2024.1
+tzdata==2024.1
+numpy==1.26.4
+et-xmlfile==1.1.0
+six==1.16.0
+greenlet==3.0.3
+typing-extensions==4.12.2
+# Added for cloud deployment on Render
+gunicorn==22.0.0
+psycopg2-binary==2.9.9
+Flask-Migrate==4.0.7
